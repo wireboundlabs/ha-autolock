@@ -34,38 +34,36 @@ async def test_async_step_user_no_input(flow, mock_hass):
 async def test_async_step_user_invalid_lock(flow, mock_hass):
     """Test user step with invalid lock entity."""
     flow.hass = mock_hass
+    # Set up mock to return None (entity not found) so validation fails
+    mock_hass.states.get.return_value = None
 
-    with patch(
-        "custom_components.autolock.config_flow.validate_lock_entity",
-        return_value=False,
-    ):
-        result = await flow.async_step_user(
-            {"name": "Test Door", "lock_entity": "invalid"}
-        )
+    result = await flow.async_step_user(
+        {"name": "Test Door", "lock_entity": "invalid"}
+    )
 
-        assert result["type"] == "form"
-        assert result["step_id"] == "user"
-        assert "errors" in result
-        assert "lock_entity" in result["errors"]
+    assert result["type"] == "form"
+    assert result["step_id"] == "user"
+    assert "errors" in result
+    assert "lock_entity" in result["errors"]
 
 
 @pytest.mark.asyncio
 async def test_async_step_user_valid(flow, mock_hass):
     """Test user step with valid input."""
     flow.hass = mock_hass
+    # Set up mock to return a valid lock state
+    lock_state = MagicMock()
+    lock_state.state = "locked"
+    mock_hass.states.get.return_value = lock_state
 
-    with patch(
-        "custom_components.autolock.config_flow.validate_lock_entity",
-        return_value=True,
-    ):
-        result = await flow.async_step_user(
-            {"name": "Test Door", "lock_entity": "lock.test"}
-        )
+    result = await flow.async_step_user(
+        {"name": "Test Door", "lock_entity": "lock.test"}
+    )
 
-        assert result["type"] == "form"
-        assert result["step_id"] == "sensor"
-        assert flow.data["name"] == "Test Door"
-        assert flow.data["lock_entity"] == "lock.test"
+    assert result["type"] == "form"
+    assert result["step_id"] == "sensor"
+    assert flow.data["name"] == "Test Door"
+    assert flow.data["lock_entity"] == "lock.test"
 
 
 @pytest.mark.asyncio
@@ -85,17 +83,15 @@ async def test_async_step_sensor_invalid(flow, mock_hass):
     """Test sensor step with invalid sensor."""
     flow.hass = mock_hass
     flow.data = {"name": "Test Door", "lock_entity": "lock.test"}
+    # Set up mock to return None (entity not found) so validation fails
+    mock_hass.states.get.return_value = None
 
-    with patch(
-        "custom_components.autolock.config_flow.validate_sensor_entity",
-        return_value=False,
-    ):
-        result = await flow.async_step_sensor({"sensor_entity": "invalid"})
+    result = await flow.async_step_sensor({"sensor_entity": "invalid"})
 
-        assert result["type"] == "form"
-        assert result["step_id"] == "sensor"
-        assert "errors" in result
-        assert "sensor_entity" in result["errors"]
+    assert result["type"] == "form"
+    assert result["step_id"] == "sensor"
+    assert "errors" in result
+    assert "sensor_entity" in result["errors"]
 
 
 @pytest.mark.asyncio
@@ -103,16 +99,16 @@ async def test_async_step_sensor_valid(flow, mock_hass):
     """Test sensor step with valid input."""
     flow.hass = mock_hass
     flow.data = {"name": "Test Door", "lock_entity": "lock.test"}
+    # Set up mock to return a valid sensor state
+    sensor_state = MagicMock()
+    sensor_state.state = "on"
+    mock_hass.states.get.return_value = sensor_state
 
-    with patch(
-        "custom_components.autolock.config_flow.validate_sensor_entity",
-        return_value=True,
-    ):
-        result = await flow.async_step_sensor({"sensor_entity": "binary_sensor.test"})
+    result = await flow.async_step_sensor({"sensor_entity": "binary_sensor.test"})
 
-        assert result["type"] == "form"
-        assert result["step_id"] == "timing"
-        assert flow.data["sensor_entity"] == "binary_sensor.test"
+    assert result["type"] == "form"
+    assert result["step_id"] == "timing"
+    assert flow.data["sensor_entity"] == "binary_sensor.test"
 
 
 @pytest.mark.asyncio
@@ -133,23 +129,20 @@ async def test_async_step_timing_invalid_schedule(flow, mock_hass):
     flow.hass = mock_hass
     flow.data = {"name": "Test Door", "lock_entity": "lock.test"}
 
-    with patch(
-        "custom_components.autolock.config_flow.validate_schedule",
-        return_value=False,
-    ):
-        result = await flow.async_step_timing(
-            {
-                "day_delay": 5,
-                "night_delay": 2,
-                "night_start": "invalid",
-                "night_end": "06:00",
-            }
-        )
+    # Actually execute validation - invalid time format will fail
+    result = await flow.async_step_timing(
+        {
+            "day_delay": 5,
+            "night_delay": 2,
+            "night_start": "invalid",
+            "night_end": "06:00",
+        }
+    )
 
-        assert result["type"] == "form"
-        assert result["step_id"] == "timing"
-        assert "errors" in result
-        assert "night_start" in result["errors"]
+    assert result["type"] == "form"
+    assert result["step_id"] == "timing"
+    assert "errors" in result
+    assert "night_start" in result["errors"]
 
 
 @pytest.mark.asyncio
@@ -158,23 +151,20 @@ async def test_async_step_timing_valid(flow, mock_hass):
     flow.hass = mock_hass
     flow.data = {"name": "Test Door", "lock_entity": "lock.test"}
 
-    with patch(
-        "custom_components.autolock.config_flow.validate_schedule",
-        return_value=True,
-    ):
-        result = await flow.async_step_timing(
-            {
-                "day_delay": 5,
-                "night_delay": 2,
-                "night_start": "22:00",
-                "night_end": "06:00",
-            }
-        )
+    # Actually execute validation - valid times will pass
+    result = await flow.async_step_timing(
+        {
+            "day_delay": 5,
+            "night_delay": 2,
+            "night_start": "22:00",
+            "night_end": "06:00",
+        }
+    )
 
-        assert result["type"] == "form"
-        assert result["step_id"] == "retry"
-        assert flow.data["day_delay"] == 5
-        assert flow.data["night_delay"] == 2
+    assert result["type"] == "form"
+    assert result["step_id"] == "retry"
+    assert flow.data["day_delay"] == 5
+    assert flow.data["night_delay"] == 2
 
 
 @pytest.mark.asyncio

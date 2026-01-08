@@ -24,52 +24,62 @@ def test_validate_lock_entity_valid():
     """Test validate_lock_entity with valid lock entity."""
     hass = MagicMock()
     state = MagicMock()
+    state.state = "locked"  # Valid state
     hass.states.get.return_value = state
 
-    with patch(
-        "custom_components.autolock.validation.validate_entity_domain",
-        return_value=True,
-    ):
-        assert validate_lock_entity(hass, "lock.test") is True
+    # Actually execute the code - don't patch it
+    assert validate_lock_entity(hass, "lock.test") is True
 
 
 def test_validate_lock_entity_invalid():
     """Test validate_lock_entity with invalid entity."""
     hass = MagicMock()
     state = MagicMock()
+    state.state = "on"  # Valid state but wrong domain
     hass.states.get.return_value = state
 
-    with patch(
-        "custom_components.autolock.validation.validate_entity_domain",
-        return_value=False,
-    ):
-        assert validate_lock_entity(hass, "binary_sensor.test") is False
+    # Actually execute the code - don't patch it
+    assert validate_lock_entity(hass, "binary_sensor.test") is False
+
+
+def test_validate_lock_entity_not_found():
+    """Test validate_lock_entity when entity doesn't exist."""
+    hass = MagicMock()
+    hass.states.get.return_value = None
+
+    # Actually execute the code - don't patch it
+    assert validate_lock_entity(hass, "lock.nonexistent") is False
 
 
 def test_validate_sensor_entity_valid():
     """Test validate_sensor_entity with valid sensor entity."""
     hass = MagicMock()
     state = MagicMock()
+    state.state = "on"  # Valid state
     hass.states.get.return_value = state
 
-    with patch(
-        "custom_components.autolock.validation.validate_entity_domain",
-        return_value=True,
-    ):
-        assert validate_sensor_entity(hass, "binary_sensor.test") is True
+    # Actually execute the code - don't patch it
+    assert validate_sensor_entity(hass, "binary_sensor.test") is True
 
 
 def test_validate_sensor_entity_invalid():
     """Test validate_sensor_entity with invalid entity."""
     hass = MagicMock()
     state = MagicMock()
+    state.state = "locked"  # Valid state but wrong domain
     hass.states.get.return_value = state
 
-    with patch(
-        "custom_components.autolock.validation.validate_entity_domain",
-        return_value=False,
-    ):
-        assert validate_sensor_entity(hass, "lock.test") is False
+    # Actually execute the code - don't patch it
+    assert validate_sensor_entity(hass, "lock.test") is False
+
+
+def test_validate_sensor_entity_not_found():
+    """Test validate_sensor_entity when entity doesn't exist."""
+    hass = MagicMock()
+    hass.states.get.return_value = None
+
+    # Actually execute the code - don't patch it
+    assert validate_sensor_entity(hass, "binary_sensor.nonexistent") is False
 
 
 def test_validate_delay_in_range():
@@ -93,41 +103,26 @@ def test_validate_delay_above_max():
 
 def test_validate_schedule_valid():
     """Test validate_schedule with valid times."""
-    with patch(
-        "custom_components.autolock.helpers.schedule.parse_time_string"
-    ) as mock_parse:
-        mock_parse.return_value = None  # No exception
-        assert validate_schedule("22:00", "06:00") is True
-        assert validate_schedule("09:00", "17:00") is True
-        assert mock_parse.call_count == 4  # Called twice per validate_schedule
+    # Actually execute the code - don't patch it
+    assert validate_schedule("22:00", "06:00") is True
+    assert validate_schedule("09:00", "17:00") is True
+    assert validate_schedule("00:00", "23:59") is True
 
 
 def test_validate_schedule_invalid_start():
     """Test validate_schedule with invalid start time."""
-    with patch(
-        "custom_components.autolock.helpers.schedule.parse_time_string"
-    ) as mock_parse:
-        mock_parse.side_effect = ValueError("Invalid time")
-        assert validate_schedule("invalid", "06:00") is False
+    # Actually execute the code - don't patch it
+    assert validate_schedule("invalid", "06:00") is False
+    assert validate_schedule("25:00", "06:00") is False  # Invalid hour
+    assert validate_schedule("22:60", "06:00") is False  # Invalid minute
 
 
 def test_validate_schedule_invalid_end():
     """Test validate_schedule with invalid end time."""
-    with patch(
-        "custom_components.autolock.helpers.schedule.parse_time_string"
-    ) as mock_parse:
-        # First call succeeds, second fails
-        call_count = 0
-
-        def side_effect(*args):
-            nonlocal call_count
-            call_count += 1
-            if call_count == 2:
-                raise ValueError("Invalid time")
-            return None
-
-        mock_parse.side_effect = side_effect
-        assert validate_schedule("22:00", "invalid") is False
+    # Actually execute the code - don't patch it
+    assert validate_schedule("22:00", "invalid") is False
+    assert validate_schedule("22:00", "25:00") is False  # Invalid hour
+    assert validate_schedule("22:00", "06:60") is False  # Invalid minute
 
 
 def test_schema_base():
