@@ -67,7 +67,7 @@ async def test_find_notify_service_with_target():
     """Test find_notify_service with specific target."""
     hass = MagicMock()
     hass.services.async_services.return_value = {
-        "notify": {"mobile_app_iphone": {}, "mobile_app_android": {}}
+        "notify": {"notify.mobile_app_iphone": {}, "notify.mobile_app_android": {}}
     }
 
     service = NotificationService(hass)
@@ -197,3 +197,16 @@ class TestFindNotifyService:
 
         # Should return first available
         assert result == "other"
+
+    @pytest.mark.asyncio
+    async def test_find_notify_service_with_target_found(self, mock_hass):
+        """Test find_notify_service when target is found with notify prefix."""
+        mock_hass.services.async_services.return_value = {
+            "notify": {"notify.mobile_app_iphone": {}, "notify.mobile_app_android": {}}
+        }
+
+        service = NotificationService(mock_hass)
+        result = service.find_notify_service("mobile_app_iphone")
+
+        # Should return target (without notify prefix) when found
+        assert result == "mobile_app_iphone"
