@@ -3,6 +3,7 @@
 This module provides reusable retry logic that can be used by any integration
 needing retry functionality (API calls, device commands, etc.).
 """
+
 from __future__ import annotations
 
 import asyncio
@@ -137,4 +138,3 @@ class RetryStrategy:
             error=last_error,
             last_error=last_error_str,
         )
-

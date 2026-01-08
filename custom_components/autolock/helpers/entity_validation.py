@@ -3,6 +3,7 @@
 This module provides reusable entity validation functions that can be used
 by any integration needing to validate entities (domain-agnostic).
 """
+
 from __future__ import annotations
 
 import logging
@@ -147,4 +148,3 @@ def get_entity_domain(hass: HomeAssistant, entity_id: str) -> str | None:
         return None
 
     return entity_id.split(".", 1)[0]
-

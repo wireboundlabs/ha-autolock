@@ -1,4 +1,5 @@
 """Services for AutoLock integration."""
+
 from __future__ import annotations
 
 import logging
@@ -200,4 +201,3 @@ def _get_door_instance(hass: HomeAssistant, door_id: str) -> Any:
     # Get from domain data
     domain_data = hass.data.get(DOMAIN, {})
     return domain_data.get(door_id)
-

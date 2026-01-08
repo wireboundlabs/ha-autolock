@@ -1,4 +1,5 @@
 """Config flow for AutoLock integration."""
+
 from __future__ import annotations
 
 import logging
@@ -203,4 +204,3 @@ class AutoLockOptionsFlowHandler(config_entries.OptionsFlow):
                 }
             ),
         )
-

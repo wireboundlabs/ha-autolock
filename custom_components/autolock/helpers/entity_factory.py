@@ -3,6 +3,7 @@
 This module provides reusable entity creation functionality that can be used
 by any integration needing to create helpers, scripts, automations, etc.
 """
+
 from __future__ import annotations
 
 import logging
@@ -242,4 +243,3 @@ class EntityFactory:
             automation_config["action"] = actions
 
         return automation_config
-

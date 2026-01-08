@@ -2,6 +2,7 @@
 
 Provides different trigger types (sensor-based vs lock-based).
 """
+
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
@@ -94,4 +95,3 @@ def create_trigger_strategy(
     if sensor_entity:
         return SensorTriggerStrategy(sensor_entity)
     return LockTriggerStrategy(lock_entity)
-

@@ -2,6 +2,7 @@
 
 Orchestrates all components for a single door instance.
 """
+
 from __future__ import annotations
 
 import logging
@@ -63,9 +64,7 @@ class AutolockDoor:
         self.snooze_entity = AUTOLOCK_SNOOZE_TEMPLATE.format(door_id=door_id)
         self.timer_entity = AUTOLOCK_TIMER_TEMPLATE.format(door_id=door_id)
         self.script_entity = AUTOLOCK_SCRIPT_TEMPLATE.format(door_id=door_id)
-        self.automation_entity = AUTOLOCK_AUTOMATION_TEMPLATE.format(
-            door_id=door_id
-        )
+        self.automation_entity = AUTOLOCK_AUTOMATION_TEMPLATE.format(door_id=door_id)
 
         # Schedule config
         self.schedule_config = ScheduleConfig.from_strings(
@@ -287,4 +286,3 @@ class AutolockDoor:
         self._listeners.clear()
 
         _LOGGER.info("Door unloaded: %s", self.config["name"])
-

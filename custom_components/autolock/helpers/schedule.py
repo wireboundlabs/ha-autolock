@@ -3,6 +3,7 @@
 This module provides reusable schedule logic that can be used by any integration
 needing day/night schedules (lights, thermostats, locks, etc.).
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -146,4 +147,3 @@ def is_time_in_range(now: datetime, start_time: time, end_time: time) -> bool:
 
     # Normal range (e.g., 09:00-17:00)
     return start_time <= current_time <= end_time
-

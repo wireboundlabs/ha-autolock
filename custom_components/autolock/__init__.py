@@ -1,4 +1,5 @@
 """The AutoLock integration."""
+
 from __future__ import annotations
 
 import logging
@@ -55,4 +56,3 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     _LOGGER.info("AutoLock entry unloaded: %s", entry.title)
     return True
-

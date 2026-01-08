@@ -1,4 +1,5 @@
 """Tests for safety validator."""
+
 from __future__ import annotations
 
 from unittest.mock import MagicMock
@@ -58,4 +59,3 @@ async def test_can_lock_door_open(mock_hass):
 
     assert can_lock is False
     assert "open" in reason.lower()
-

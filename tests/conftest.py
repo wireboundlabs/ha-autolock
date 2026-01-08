@@ -1,4 +1,5 @@
 """Pytest configuration and fixtures."""
+
 from __future__ import annotations
 
 from unittest.mock import AsyncMock, MagicMock
@@ -52,4 +53,3 @@ def mock_config_entry():
         "enable_on_creation": True,
     }
     return entry
-

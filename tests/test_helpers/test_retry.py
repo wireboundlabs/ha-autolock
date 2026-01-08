@@ -1,4 +1,5 @@
 """Tests for retry strategy."""
+
 from __future__ import annotations
 
 import pytest
@@ -59,4 +60,3 @@ async def test_retry_no_retries():
 
     assert result.success is False
     assert result.attempts == 1  # Only initial attempt
-

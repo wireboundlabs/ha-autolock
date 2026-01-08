@@ -3,6 +3,7 @@
 These helpers are integration-agnostic and can be copied to other integrations
 or extracted to a shared core integration library.
 """
+
 from __future__ import annotations
 
 from .entity_factory import EntityFactory
@@ -27,4 +28,3 @@ __all__ = [
     "validate_entity_exists",
     "validate_entity_state",
 ]
-

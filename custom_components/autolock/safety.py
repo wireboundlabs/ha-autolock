@@ -2,6 +2,7 @@
 
 Handles pre-lock safety checks and post-lock verification.
 """
+
 from __future__ import annotations
 
 import asyncio
@@ -178,4 +179,3 @@ class SafetyValidator:
             verified=True,
             error=None,
         )
-

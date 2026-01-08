@@ -3,6 +3,7 @@
 This module provides reusable notification functionality that can be used by
 any integration needing notifications (alarms, sensors, automations, etc.).
 """
+
 from __future__ import annotations
 
 import logging
@@ -191,4 +192,3 @@ class NotificationService:
             return list(notify_services.keys())[0]
 
         return None
-

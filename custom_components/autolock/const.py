@@ -1,4 +1,5 @@
 """Constants for the AutoLock integration."""
+
 from __future__ import annotations
 
 from typing import Final
@@ -46,4 +47,3 @@ SNOOZE_DURATION_60: Final = 60
 
 # Notification
 NOTIFICATION_ID_TEMPLATE: Final = "autolock_{door_id}_failure"
-

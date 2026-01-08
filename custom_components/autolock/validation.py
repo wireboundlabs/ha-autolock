@@ -2,6 +2,7 @@
 
 Uses helpers for generic validation, adds autolock-specific validation.
 """
+
 from __future__ import annotations
 
 import logging
@@ -139,4 +140,3 @@ SCHEMA_OPTIONS = vol.Schema(
         vol.Required("enable_on_creation", default=True): bool,
     }
 )
-

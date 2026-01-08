@@ -1,4 +1,5 @@
 """Tests for schedule calculator."""
+
 from __future__ import annotations
 
 from datetime import datetime, time
@@ -79,4 +80,3 @@ def test_schedule_calculator_get_delay():
     # No schedule
     delay = calculator.get_delay(now, day_delay=5, night_delay=2, schedule=None)
     assert delay == 5
-
