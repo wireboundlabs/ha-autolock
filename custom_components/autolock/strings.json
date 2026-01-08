@@ -1,0 +1,70 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "AutoLock Setup",
+        "description": "Configure automatic door locking",
+        "data": {
+          "name": "Door Name",
+          "lock_entity": "Lock Entity"
+        }
+      },
+      "sensor": {
+        "title": "Door Sensor (Optional)",
+        "description": "Select a door sensor if available",
+        "data": {
+          "sensor_entity": "Door Sensor"
+        }
+      },
+      "timing": {
+        "title": "Timing Configuration",
+        "description": "Configure day/night delays and schedule",
+        "data": {
+          "day_delay": "Day Delay (minutes)",
+          "night_delay": "Night Delay (minutes)",
+          "night_start": "Night Start Time",
+          "night_end": "Night End Time"
+        }
+      },
+      "retry": {
+        "title": "Retry Settings",
+        "description": "Configure retry behavior for lock failures",
+        "data": {
+          "retry_count": "Retry Count",
+          "retry_delay": "Retry Delay (seconds)",
+          "verification_delay": "Verification Delay (seconds)"
+        }
+      },
+      "options": {
+        "title": "Options",
+        "description": "Additional configuration options",
+        "data": {
+          "enable_on_creation": "Enable on Creation"
+        }
+      }
+    },
+    "error": {
+      "invalid_lock_entity": "Invalid lock entity",
+      "invalid_sensor_entity": "Invalid sensor entity",
+      "invalid_schedule": "Invalid schedule times"
+    },
+    "abort": {
+      "already_configured": "This door is already configured"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Update AutoLock Configuration",
+        "description": "Update door auto-lock settings",
+        "data": {
+          "day_delay": "Day Delay (minutes)",
+          "night_delay": "Night Delay (minutes)",
+          "retry_count": "Retry Count",
+          "retry_delay": "Retry Delay (seconds)"
+        }
+      }
+    }
+  }
+}
+

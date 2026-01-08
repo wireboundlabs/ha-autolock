@@ -1,0 +1,109 @@
+# AutoLock Package Example
+# Copy this to your Home Assistant packages directory and customize for your doors
+
+# Front Door AutoLock
+input_boolean:
+  autolock_front_enabled:
+    name: "Front Door AutoLock Enabled"
+    icon: mdi:lock-clock
+    initial: true
+
+input_datetime:
+  autolock_front_snooze_until:
+    name: "Front Door AutoLock Snooze Until"
+    has_date: false
+    has_time: true
+
+timer:
+  autolock_front_delay:
+    name: "Front Door AutoLock Delay"
+    icon: mdi:timer
+
+automation:
+  - id: autolock_front
+    alias: "Front Door AutoLock"
+    description: "Automatically lock front door after it closes"
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.front_door_contact
+        to: "on"  # Door closed
+    condition:
+      - condition: state
+        entity_id: input_boolean.autolock_front_enabled
+        state: "on"
+      - condition: template
+        value_template: >
+          {% set now = now().time() %}
+          {% set snooze = states('input_datetime.autolock_front_snooze_until') %}
+          {% if snooze not in ['unknown', 'unavailable'] %}
+            {% set snooze_time = as_timestamp(snooze) | timestamp_custom('%H:%M') %}
+            {{ now.strftime('%H:%M') >= snooze_time }}
+          {% else %}
+            true
+          {% endif %}
+    action:
+      - service: timer.cancel
+        target:
+          entity_id: timer.autolock_front_delay
+      - service: timer.start
+        target:
+          entity_id: timer.autolock_front_delay
+        data:
+          duration: "00:05:00"  # 5 minutes during day
+      - wait_for_trigger:
+          - platform: event
+            event_type: timer.finished
+            event_data:
+              entity_id: timer.autolock_front_delay
+      - condition: state
+        entity_id: lock.front_door
+        state: "unlocked"
+      - condition: state
+        entity_id: binary_sensor.front_door_contact
+        state: "on"
+      - service: lock.lock
+        target:
+          entity_id: lock.front_door
+
+# Back Door AutoLock (example with different settings)
+input_boolean:
+  autolock_back_enabled:
+    name: "Back Door AutoLock Enabled"
+    icon: mdi:lock-clock
+    initial: true
+
+timer:
+  autolock_back_delay:
+    name: "Back Door AutoLock Delay"
+    icon: mdi:timer
+
+automation:
+  - id: autolock_back
+    alias: "Back Door AutoLock"
+    description: "Automatically lock back door after it closes"
+    trigger:
+      - platform: state
+        entity_id: lock.back_door
+        to: "unlocked"  # No sensor, use lock state
+    condition:
+      - condition: state
+        entity_id: input_boolean.autolock_back_enabled
+        state: "on"
+    action:
+      - service: timer.cancel
+        target:
+          entity_id: timer.autolock_back_delay
+      - service: timer.start
+        target:
+          entity_id: timer.autolock_back_delay
+        data:
+          duration: "00:03:00"  # 3 minutes
+      - wait_for_trigger:
+          - platform: event
+            event_type: timer.finished
+            event_data:
+              entity_id: timer.autolock_back_delay
+      - service: lock.lock
+        target:
+          entity_id: lock.back_door
+

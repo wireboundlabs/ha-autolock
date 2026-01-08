@@ -1,0 +1,18 @@
+coverage:
+  precision: 2
+  round: down
+  range: "70...100"
+  status:
+    project:
+      default:
+        target: 85%
+        threshold: 1%
+    patch:
+      default:
+        target: 80%
+
+ignore:
+  - "*/tests/*"
+  - "*/__pycache__/*"
+  - "*/__init__.py"
+

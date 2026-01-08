@@ -1,0 +1,130 @@
+blueprint:
+  name: AutoLock
+  description: Automatically lock doors after they close with configurable day/night delays
+  domain: automation
+  input:
+    door_name:
+      name: Door Name
+      description: Friendly name for this door
+      selector:
+        text:
+    lock_entity:
+      name: Lock Entity
+      description: Lock entity to control
+      selector:
+        entity:
+          domain: lock
+    sensor_entity:
+      name: Door Sensor (Optional)
+      description: Binary sensor that detects door closed (optional, will use lock state if not provided)
+      selector:
+        entity:
+          domain: binary_sensor
+      default: ""
+    day_delay:
+      name: Day Delay (minutes)
+      description: Minutes to wait before locking during day
+      selector:
+        number:
+          min: 1
+          max: 240
+          step: 1
+          unit_of_measurement: minutes
+      default: 5
+    night_delay:
+      name: Night Delay (minutes)
+      description: Minutes to wait before locking during night
+      selector:
+        number:
+          min: 1
+          max: 30
+          step: 1
+          unit_of_measurement: minutes
+      default: 2
+    night_start:
+      name: Night Start Time
+      description: Time when night schedule starts (HH:MM)
+      selector:
+        time:
+      default: "22:00"
+    night_end:
+      name: Night End Time
+      description: Time when night schedule ends (HH:MM)
+      selector:
+        time:
+      default: "06:00"
+    retry_count:
+      name: Retry Count
+      description: Number of retry attempts if lock fails
+      selector:
+        number:
+          min: 0
+          max: 5
+          step: 1
+      default: 3
+    retry_delay:
+      name: Retry Delay (seconds)
+      description: Seconds to wait between retries
+      selector:
+        number:
+          min: 3
+          max: 60
+          step: 1
+          unit_of_measurement: seconds
+      default: 5
+
+trigger:
+  - platform: state
+    entity_id: !input sensor_entity
+    to: "on"
+  - platform: state
+    entity_id: !input lock_entity
+    to: "unlocked"
+    id: lock_unlocked
+
+condition:
+  - condition: state
+    entity_id: input_boolean.autolock_enabled
+    state: "on"
+
+action:
+  - service: timer.cancel
+    target:
+      entity_id: timer.autolock_delay
+  - service: timer.start
+    target:
+      entity_id: timer.autolock_delay
+    data:
+      duration: !input day_delay
+  - wait_for_trigger:
+      - platform: event
+        event_type: timer.finished
+        event_data:
+          entity_id: timer.autolock_delay
+  - condition: state
+    entity_id: !input lock_entity
+    state: "unlocked"
+  - condition: state
+    entity_id: !input sensor_entity
+    state: "on"
+  - repeat:
+      count: !input retry_count
+      sequence:
+        - service: lock.lock
+          target:
+            entity_id: !input lock_entity
+        - wait_template: "{{ states('" + !input lock_entity + "') == 'locked' }}"
+          timeout: "00:00:05"
+        - choose:
+            - conditions:
+                - condition: state
+                  entity_id: !input lock_entity
+                  state: "locked"
+              sequence:
+                - stop: "Locked successfully"
+            - conditions:
+                - condition: template
+                  value_template: "{{ repeat.index < " + !input retry_count + " }}"
+              sequence:
+                - delay: !input retry_delay
+
