@@ -80,3 +80,19 @@ def test_schedule_calculator_get_delay():
     # No schedule
     delay = calculator.get_delay(now, day_delay=5, night_delay=2, schedule=None)
     assert delay == 5
+
+
+def test_schedule_config_from_strings_exception():
+    """Test ScheduleConfig.from_strings with invalid time."""
+    with pytest.raises(ValueError):
+        ScheduleConfig.from_strings("invalid", "06:00")
+
+
+def test_schedule_calculator_is_time_in_range():
+    """Test ScheduleCalculator.is_time_in_range static method."""
+    calculator = ScheduleCalculator()
+    now = datetime(2024, 1, 1, 12, 0)
+    start = time(9, 0)
+    end = time(17, 0)
+
+    assert calculator.is_time_in_range(now, start, end) is True

@@ -34,6 +34,10 @@ def test_validate_entity_domain():
     assert validate_entity_domain(hass, "lock.test", "lock") is True
     assert validate_entity_domain(hass, "lock.test", "binary_sensor") is False
 
+    # Test when entity doesn't exist
+    hass.states.get.return_value = None
+    assert validate_entity_domain(hass, "lock.test", "lock") is False
+
 
 def test_validate_entity_state():
     """Test validate_entity_state."""
@@ -44,6 +48,14 @@ def test_validate_entity_state():
 
     assert validate_entity_state(hass, "lock.test", ["locked", "unlocked"]) is True
     assert validate_entity_state(hass, "lock.test", ["unlocked"]) is False
+
+    # Test when entity doesn't exist
+    hass.states.get.return_value = None
+    assert validate_entity_state(hass, "lock.test", ["locked"]) is False
+
+    # Test with empty allowed states
+    hass.states.get.return_value = state
+    assert validate_entity_state(hass, "lock.test", []) is False
 
 
 def test_validate_entity_available():
@@ -62,7 +74,13 @@ def test_validate_entity_available():
 def test_get_entity_domain():
     """Test get_entity_domain."""
     hass = MagicMock()
+    state = MagicMock()
+    hass.states.get.return_value = state
 
     assert get_entity_domain(hass, "lock.test") == "lock"
     assert get_entity_domain(hass, "binary_sensor.door") == "binary_sensor"
     assert get_entity_domain(hass, "invalid") is None
+
+    # Test when entity doesn't exist
+    hass.states.get.return_value = None
+    assert get_entity_domain(hass, "lock.test") is None

@@ -86,3 +86,31 @@ async def test_find_notify_service_target_not_found(mock_hass):
 
     # Should return first available
     assert result == "other"
+
+
+@pytest.mark.asyncio
+async def test_send_push_notification_with_data(mock_hass):
+    """Test send_push_notification with data parameter."""
+    mock_hass.services.async_services.return_value = {"notify": {"mobile_app": {}}}
+    mock_hass.services.async_call = AsyncMock(return_value=None)
+
+    service = NotificationService(mock_hass)
+    result = await service.send_push_notification(
+        "Title", "Message", data={"key": "value"}
+    )
+
+    assert result is True
+    call_args = mock_hass.services.async_call.call_args
+    assert call_args[0][2].get("data") == {"key": "value"}
+
+
+@pytest.mark.asyncio
+async def test_send_push_notification_exception(mock_hass):
+    """Test send_push_notification with exception."""
+    mock_hass.services.async_services.return_value = {"notify": {"mobile_app": {}}}
+    mock_hass.services.async_call = AsyncMock(side_effect=Exception("Service error"))
+
+    service = NotificationService(mock_hass)
+    result = await service.send_push_notification("Title", "Message")
+
+    assert result is False
