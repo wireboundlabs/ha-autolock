@@ -11,10 +11,11 @@ repos:
       - id: check-case-conflict
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.1.15
+    rev: v0.8.4
     hooks:
       - id: ruff
-        args: [--fix, --exit-non-zero-on-fix]
+        args: [--fix]
+        # Don't fail on fixable issues - just fix them
       - id: ruff-format
 
   - repo: https://github.com/pre-commit/mirrors-mypy

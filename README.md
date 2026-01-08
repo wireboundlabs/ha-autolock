@@ -147,9 +147,24 @@ Each door creates the following helpers:
 ### Setup
 
 ```bash
+# Install development dependencies
 pip install -r requirements_dev.txt
+
+# Install pre-commit hooks (auto-fixes on commit)
 pre-commit install
+
+# Or use the setup script:
+# On Linux/Mac: bash setup_pre_commit.sh
+# On Windows: powershell -ExecutionPolicy Bypass -File setup_pre_commit.ps1
 ```
+
+**Pre-commit hooks** will automatically:
+- Run `ruff check --fix` to fix linting issues
+- Run `ruff format` to format code
+- Run `mypy` for type checking
+- Run basic file checks (YAML, JSON, etc.)
+
+This ensures code quality before every commit!
 
 ### Running Tests
 

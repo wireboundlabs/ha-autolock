@@ -22,8 +22,6 @@ async def test_async_setup_services(mock_hass):
 @pytest.mark.asyncio
 async def test_lock_now_service(mock_hass):
     """Test lock_now service."""
-    from custom_components.autolock.services import _get_door_instance
-
     # Setup door in hass.data
     door = MagicMock()
     door.config = {"name": "Test Door", "lock_entity": "lock.test"}
