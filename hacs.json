@@ -3,6 +3,6 @@
   "hacs": "1.6.0",
   "domains": ["autolock"],
   "iot_class": "Local Polling",
-  "homeassistant": "2026.1"
+  "homeassistant": "2025.1.4"
 }
 

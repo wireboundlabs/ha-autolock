@@ -3,7 +3,7 @@
 [![CI](https://github.com/wirebound-labs/ha-autolock/workflows/CI/badge.svg)](https://github.com/wirebound-labs/ha-autolock/actions)
 [![Coverage](https://codecov.io/gh/wirebound-labs/ha-autolock/branch/main/graph/badge.svg)](https://codecov.io/gh/wirebound-labs/ha-autolock)
 [![hacs](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://github.com/hacs/integration)
-[![ha-core](https://img.shields.io/badge/Home%20Assistant-2026.1%2B-blue.svg)](https://www.home-assistant.io/)
+[![ha-core](https://img.shields.io/badge/Home%20Assistant-2025.1.4%2B-blue.svg)](https://www.home-assistant.io/)
 [![python](https://img.shields.io/badge/Python-3.12-blue.svg)](https://www.python.org/)
 
 Automatically lock doors after they close with configurable day/night delays, retry logic, and safety checks.
@@ -137,7 +137,7 @@ Each door creates the following helpers:
 
 ## Requirements
 
-- Home Assistant 2026.1 or later
+- Home Assistant 2025.1.4 or later
 - Python 3.12 or later
 - Lock entity (lock domain)
 - Optional: Binary sensor for door state

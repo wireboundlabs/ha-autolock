@@ -146,6 +146,6 @@ await factory.create_input_boolean(
 ## Requirements
 
 - Python 3.12+
-- Home Assistant 2026.1+
+- Home Assistant 2025.1.4+
 - No additional dependencies (uses only HA core APIs)
 
