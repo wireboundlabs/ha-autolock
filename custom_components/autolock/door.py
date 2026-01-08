@@ -278,7 +278,9 @@ class AutolockDoor:
 
         # All retries failed
         error_msg = (
-            last_lock_result.error if last_lock_result and last_lock_result.error else "Lock failed"
+            last_lock_result.error
+            if last_lock_result and last_lock_result.error
+            else "Lock failed"
         )
         message = (
             f"Failed to lock {lock_entity}: {error_msg}\n\n"

@@ -6,9 +6,9 @@ import logging
 from datetime import datetime, timedelta
 from typing import Any
 
+import voluptuous as vol
 from homeassistant.core import HomeAssistant, ServiceCall
 from homeassistant.helpers import config_validation as cv
-import voluptuous as vol
 
 from .const import (
     AUTOLOCK_ENABLED_TEMPLATE,
