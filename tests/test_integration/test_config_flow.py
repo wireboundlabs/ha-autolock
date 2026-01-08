@@ -333,3 +333,15 @@ async def test_options_flow_step_init_with_input(mock_hass):
     assert result["type"] == "create_entry"
     assert result["title"] == ""
     mock_hass.config_entries.async_update_entry.assert_called_once()
+
+
+@pytest.mark.asyncio
+async def test_async_step_sensor_no_sensor(flow, mock_hass):
+    """Test sensor step with no sensor."""
+    flow.hass = mock_hass
+    flow.data = {"name": "Test Door", "lock_entity": "lock.test"}
+
+    result = await flow.async_step_sensor({"sensor_entity": ""})
+
+    assert result["type"] == "form"
+    assert result["step_id"] == "timing"
