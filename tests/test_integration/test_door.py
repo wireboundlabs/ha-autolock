@@ -325,10 +325,12 @@ class TestHandleTrigger:
             # Verify timer was started with correct delay
             call_args_list = mock_hass.services.async_call.call_args_list
             for call in call_args_list:
-                if call[0][0] == "timer" and call[0][1] == "start":
-                    duration = call[1]["duration"]
+                args = call[0]  # Positional arguments
+                if len(args) >= 3 and args[0] == "timer" and args[1] == "start":
+                    service_data = args[2]  # Third arg is the service data dict
+                    duration = service_data.get("duration")
                     expected_str = f"00:{expected_delay:02d}:00"
-                    assert expected_str in duration or duration == expected_str
+                    assert duration == expected_str
 
 
 class TestHandleTimerFinished:
