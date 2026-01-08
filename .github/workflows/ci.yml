@@ -57,7 +57,7 @@ jobs:
       
       - name: Check helpers coverage
         run: |
-          pytest --cov=custom_components/autolock/helpers --cov-report=term --cov-fail-under=90 tests/test_helpers/
+          pytest --cov=custom_components.autolock.helpers --cov-config=.coveragerc.helpers --cov-report=term --cov-fail-under=90 tests/test_helpers/
       
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
