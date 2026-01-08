@@ -5,6 +5,7 @@ Orchestrates all components for a single door instance.
 
 from __future__ import annotations
 
+import asyncio
 import logging
 from collections.abc import Callable
 from typing import Any
@@ -242,39 +243,54 @@ class AutolockDoor:
         lock_entity = self.config["lock_entity"]
         sensor_entity = self.config.get("sensor_entity")
 
-        async def lock_callable() -> LockResult:
-            """Callable for retry strategy."""
-            return await self.safety_validator.lock_with_verification(
+        # Attempt lock with retry logic
+        last_lock_result: LockResult | None = None
+        retry_count = self.config.get("retry_count", 3)
+
+        for attempt in range(retry_count + 1):
+            lock_result = await self.safety_validator.lock_with_verification(
                 lock_entity,
                 verification_delay=self.config.get("verification_delay", 5.0),
                 sensor_entity=sensor_entity,
             )
 
-        # Execute with retry
-        result = await self.retry_strategy.execute_with_retry(
-            lock_callable,
-            max_retries=self.config.get("retry_count", 3),
-            delay=self.config.get("retry_delay", 5.0),
-        )
+            if lock_result.success and lock_result.verified:
+                _LOGGER.info(
+                    "Lock successful for door %s (attempt %d)",
+                    self.config["name"],
+                    attempt + 1,
+                )
+                return
 
-        # Check result
-        is_lock_result = isinstance(result, LockResult)
-        if not result.success or (is_lock_result and not result.verified):
-            # Send failure notification
-            error_msg = (
-                result.last_error if hasattr(result, "last_error") else "Lock failed"
-            )
-            message = (
-                f"Failed to lock {lock_entity}: {error_msg}\n\n"
-                "Likely cloud auth / integration issue. "
-                "Check lock integration status."
-            )
-            await self.notification_service.send_notification(
-                title=f"AutoLock Failed: {self.config['name']}",
-                message=message,
-                persistent_id=f"autolock_{self.door_id}_failure",
-                severity="error",
-            )
+            last_lock_result = lock_result
+
+            # If not last attempt, wait before retry
+            if attempt < retry_count:
+                retry_delay = self.config.get("retry_delay", 5.0)
+                _LOGGER.warning(
+                    "Lock failed for door %s (attempt %d/%d), retrying in %.1f seconds",
+                    self.config["name"],
+                    attempt + 1,
+                    retry_count + 1,
+                    retry_delay,
+                )
+                await asyncio.sleep(retry_delay)
+
+        # All retries failed
+        error_msg = (
+            last_lock_result.error if last_lock_result and last_lock_result.error else "Lock failed"
+        )
+        message = (
+            f"Failed to lock {lock_entity}: {error_msg}\n\n"
+            "Likely cloud auth / integration issue. "
+            "Check lock integration status."
+        )
+        await self.notification_service.send_notification(
+            title=f"AutoLock Failed: {self.config['name']}",
+            message=message,
+            persistent_id=f"autolock_{self.door_id}_failure",
+            severity="error",
+        )
 
     async def async_unload(self) -> None:
         """Unload door instance (remove listeners)."""

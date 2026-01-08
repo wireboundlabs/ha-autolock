@@ -189,6 +189,8 @@ class NotificationService:
         notify_services = self.hass.services.async_services().get("notify", {})
         if notify_services:
             # Return first available service
-            return list(notify_services.keys())[0]
+            service_keys = list(notify_services.keys())
+            if service_keys:
+                return str(service_keys[0])
 
         return None

@@ -25,7 +25,7 @@ from .validation import (
 _LOGGER = logging.getLogger(__name__)
 
 
-class AutoLockConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
+class AutoLockConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):  # type: ignore[call-arg]
     """Handle a config flow for AutoLock."""
 
     VERSION = 1

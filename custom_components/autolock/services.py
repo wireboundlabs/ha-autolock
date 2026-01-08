@@ -8,6 +8,7 @@ from typing import Any
 
 from homeassistant.core import HomeAssistant, ServiceCall
 from homeassistant.helpers import config_validation as cv
+import voluptuous as vol
 
 from .const import (
     AUTOLOCK_ENABLED_TEMPLATE,
@@ -25,7 +26,7 @@ _LOGGER = logging.getLogger(__name__)
 SERVICE_LOCK_NOW_SCHEMA = cv.make_entity_service_schema({})
 SERVICE_SNOOZE_SCHEMA = cv.make_entity_service_schema(
     {
-        cv.Required("duration"): cv.positive_int,
+        vol.Required("duration"): cv.positive_int,
     }
 )
 SERVICE_ENABLE_SCHEMA = cv.make_entity_service_schema({})
