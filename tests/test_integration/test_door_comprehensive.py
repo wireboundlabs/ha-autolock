@@ -288,16 +288,16 @@ async def test_handle_trigger_snoozed(door, mock_hass):
         @staticmethod
         def now(tz=None):
             return datetime(2024, 1, 1, 11, 0, 0)
-        
+
         @staticmethod
         def fromisoformat(date_string):
             return datetime(2024, 1, 1, 12, 0, 0)
-        
+
         def __call__(self, *args, **kwargs):
             return datetime(*args, **kwargs)
-    
+
     mock_dt = MockDateTime()
-    
+
     with patch("datetime.datetime", mock_dt):
         await door._handle_trigger()
 
@@ -327,16 +327,16 @@ async def test_handle_trigger_snooze_expired(door, mock_hass):
         @staticmethod
         def now(tz=None):
             return datetime(2024, 1, 1, 11, 0, 0)
-        
+
         @staticmethod
         def fromisoformat(date_string):
             return datetime(2024, 1, 1, 10, 0, 0)
-        
+
         def __call__(self, *args, **kwargs):
             return datetime(*args, **kwargs)
-    
+
     mock_dt = MockDateTime()
-    
+
     with (
         patch("datetime.datetime", mock_dt),
         patch.object(door.schedule_calculator, "get_delay", return_value=5),
@@ -369,16 +369,16 @@ async def test_handle_trigger_snooze_invalid_format(door, mock_hass):
         @staticmethod
         def now(tz=None):
             return datetime(2024, 1, 1, 11, 0, 0)
-        
+
         @staticmethod
         def fromisoformat(date_string):
             raise ValueError("Invalid format")
-        
+
         def __call__(self, *args, **kwargs):
             return datetime(*args, **kwargs)
-    
+
     mock_dt = MockDateTime()
-    
+
     with (
         patch("datetime.datetime", mock_dt),
         patch.object(door.schedule_calculator, "get_delay", return_value=5),
