@@ -171,6 +171,23 @@ pre-commit install
 
 This ensures code quality before every commit!
 
+**Note:** If pre-commit hooks make changes to your files, you'll need to stage those changes and commit again:
+
+```bash
+# After pre-commit fixes files, stage and commit again
+git add .
+git commit -m "Your message"
+```
+
+**Tip:** To fix issues before committing, run:
+
+```bash
+pre-commit run --all-files
+# Then stage any changes and commit normally
+git add .
+git commit -m "Your message"
+```
+
 ### Running Tests
 
 ```bash
