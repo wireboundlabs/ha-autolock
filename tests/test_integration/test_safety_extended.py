@@ -143,7 +143,12 @@ async def test_lock_with_verification_verification_fails(mock_hass):
         patch("asyncio.sleep", new_callable=AsyncMock),
         patch("asyncio.get_event_loop") as mock_loop,
     ):
-        mock_loop.return_value.time.side_effect = [0.0, 2.0]  # Timeout
+        # Mock time to simulate timeout
+        # First call: start_time (0.0)
+        # Second call: elapsed check (6.0, which is > timeout of 5.0)
+        time_mock = MagicMock()
+        time_mock.side_effect = [0.0, 6.0]  # Start, then timeout
+        mock_loop.return_value.time = time_mock
 
         result = await validator.lock_with_verification(
             "lock.test", verification_delay=0.1
