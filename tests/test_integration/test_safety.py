@@ -6,7 +6,7 @@ from unittest.mock import MagicMock
 import pytest
 
 from custom_components.autolock.const import LOCK_STATE_LOCKED, LOCK_STATE_UNLOCKED
-from custom_components.autolock.safety import LockResult, SafetyValidator
+from custom_components.autolock.safety import SafetyValidator
 
 
 @pytest.mark.asyncio

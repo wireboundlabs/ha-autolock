@@ -7,8 +7,9 @@ from __future__ import annotations
 
 import asyncio
 import logging
+from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
-from typing import Awaitable, Callable, TypeVar
+from typing import TypeVar
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -77,7 +78,7 @@ class RetryStrategy:
 
         while attempt <= max_retries:
             try:
-                result = await callable_func()
+                await callable_func()
                 if attempt > 0:
                     self.logger.info(
                         "Operation succeeded after %d retry attempt(s)",

@@ -1,11 +1,9 @@
 """Tests for retry strategy."""
 from __future__ import annotations
 
-import asyncio
-
 import pytest
 
-from custom_components.autolock.helpers.retry import RetryResult, RetryStrategy
+from custom_components.autolock.helpers.retry import RetryStrategy
 
 
 async def successful_callable():

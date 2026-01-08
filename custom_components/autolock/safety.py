@@ -7,11 +7,10 @@ from __future__ import annotations
 import asyncio
 import logging
 from dataclasses import dataclass
-from typing import Any
 
 from homeassistant.core import HomeAssistant
 
-from .const import LOCK_STATE_LOCKED, LOCK_STATE_UNLOCKED
+from .const import LOCK_STATE_LOCKED
 
 _LOGGER = logging.getLogger(__name__)
 

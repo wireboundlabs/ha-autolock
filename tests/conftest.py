@@ -1,12 +1,10 @@
 """Pytest configuration and fixtures."""
 from __future__ import annotations
 
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import AsyncMock, MagicMock
 
 import pytest
-
 from homeassistant.core import HomeAssistant
-from homeassistant.setup import async_setup_component
 
 
 @pytest.fixture

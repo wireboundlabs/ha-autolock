@@ -6,10 +6,8 @@ by any integration needing to validate entities (domain-agnostic).
 from __future__ import annotations
 
 import logging
-from typing import Any
 
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers import entity_registry as er
 
 _LOGGER = logging.getLogger(__name__)
 

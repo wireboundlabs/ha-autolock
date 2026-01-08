@@ -4,12 +4,11 @@ Orchestrates all components for a single door instance.
 """
 from __future__ import annotations
 
-import asyncio
 import logging
-from typing import Any, Callable
+from collections.abc import Callable
+from typing import Any
 
 from homeassistant.core import Event, HomeAssistant, callback
-from homeassistant.helpers import entity_registry as er
 
 from .const import (
     AUTOLOCK_AUTOMATION_TEMPLATE,
@@ -17,7 +16,6 @@ from .const import (
     AUTOLOCK_SCRIPT_TEMPLATE,
     AUTOLOCK_SNOOZE_TEMPLATE,
     AUTOLOCK_TIMER_TEMPLATE,
-    DOMAIN,
     LOCK_STATE_UNLOCKED,
 )
 from .helpers import (
@@ -215,7 +213,7 @@ class AutolockDoor:
         )
 
         # Start timer
-        delay_seconds = delay_minutes * 60
+        delay_minutes * 60
         await self.hass.services.async_call(
             "timer",
             "start",

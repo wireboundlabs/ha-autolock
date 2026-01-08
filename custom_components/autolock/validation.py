@@ -5,10 +5,9 @@ Uses helpers for generic validation, adds autolock-specific validation.
 from __future__ import annotations
 
 import logging
-from typing import Any
 
-from homeassistant.core import HomeAssistant
 import voluptuous as vol
+from homeassistant.core import HomeAssistant
 
 from .const import (
     MAX_DAY_DELAY,
@@ -24,7 +23,6 @@ from .const import (
 )
 from .helpers.entity_validation import (
     validate_entity_domain,
-    validate_entity_exists,
 )
 
 _LOGGER = logging.getLogger(__name__)
