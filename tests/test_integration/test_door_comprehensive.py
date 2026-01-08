@@ -283,11 +283,22 @@ async def test_handle_trigger_snoozed(door, mock_hass):
     mock_hass.states.get.side_effect = mock_get
     mock_hass.services.async_call = AsyncMock()
 
-    with patch("custom_components.autolock.door.datetime") as mock_dt:
-        mock_now = datetime(2024, 1, 1, 11, 0, 0)
-        mock_dt.now.return_value = mock_now
-        mock_dt.fromisoformat.return_value = datetime(2024, 1, 1, 12, 0, 0)
-
+    # Create a mock datetime that can be used both as class and constructor
+    class MockDateTime:
+        @staticmethod
+        def now(tz=None):
+            return datetime(2024, 1, 1, 11, 0, 0)
+        
+        @staticmethod
+        def fromisoformat(date_string):
+            return datetime(2024, 1, 1, 12, 0, 0)
+        
+        def __call__(self, *args, **kwargs):
+            return datetime(*args, **kwargs)
+    
+    mock_dt = MockDateTime()
+    
+    with patch("datetime.datetime", mock_dt):
         await door._handle_trigger()
 
         # Should not start timer
@@ -312,14 +323,24 @@ async def test_handle_trigger_snooze_expired(door, mock_hass):
     mock_hass.states.get.side_effect = mock_get
     mock_hass.services.async_call = AsyncMock()
 
+    class MockDateTime:
+        @staticmethod
+        def now(tz=None):
+            return datetime(2024, 1, 1, 11, 0, 0)
+        
+        @staticmethod
+        def fromisoformat(date_string):
+            return datetime(2024, 1, 1, 10, 0, 0)
+        
+        def __call__(self, *args, **kwargs):
+            return datetime(*args, **kwargs)
+    
+    mock_dt = MockDateTime()
+    
     with (
-        patch("custom_components.autolock.door.datetime") as mock_dt,
+        patch("datetime.datetime", mock_dt),
         patch.object(door.schedule_calculator, "get_delay", return_value=5),
     ):
-        mock_now = datetime(2024, 1, 1, 11, 0, 0)
-        mock_dt.now.return_value = mock_now
-        mock_dt.fromisoformat.return_value = datetime(2024, 1, 1, 10, 0, 0)
-
         await door._handle_trigger()
 
         # Should start timer
@@ -344,14 +365,24 @@ async def test_handle_trigger_snooze_invalid_format(door, mock_hass):
     mock_hass.states.get.side_effect = mock_get
     mock_hass.services.async_call = AsyncMock()
 
+    class MockDateTime:
+        @staticmethod
+        def now(tz=None):
+            return datetime(2024, 1, 1, 11, 0, 0)
+        
+        @staticmethod
+        def fromisoformat(date_string):
+            raise ValueError("Invalid format")
+        
+        def __call__(self, *args, **kwargs):
+            return datetime(*args, **kwargs)
+    
+    mock_dt = MockDateTime()
+    
     with (
-        patch("custom_components.autolock.door.datetime") as mock_dt,
+        patch("datetime.datetime", mock_dt),
         patch.object(door.schedule_calculator, "get_delay", return_value=5),
     ):
-        mock_now = datetime(2024, 1, 1, 11, 0, 0)
-        mock_dt.now.return_value = mock_now
-        mock_dt.fromisoformat.side_effect = ValueError("Invalid format")
-
         await door._handle_trigger()
 
         # Should start timer (invalid snooze is ignored)

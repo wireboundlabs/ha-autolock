@@ -92,7 +92,7 @@ def test_validate_delay_above_max():
 
 def test_validate_schedule_valid():
     """Test validate_schedule with valid times."""
-    with patch("custom_components.autolock.validation.parse_time_string") as mock_parse:
+    with patch("custom_components.autolock.helpers.schedule.parse_time_string") as mock_parse:
         mock_parse.return_value = None  # No exception
         assert validate_schedule("22:00", "06:00") is True
         assert validate_schedule("09:00", "17:00") is True
@@ -101,14 +101,14 @@ def test_validate_schedule_valid():
 
 def test_validate_schedule_invalid_start():
     """Test validate_schedule with invalid start time."""
-    with patch("custom_components.autolock.validation.parse_time_string") as mock_parse:
+    with patch("custom_components.autolock.helpers.schedule.parse_time_string") as mock_parse:
         mock_parse.side_effect = ValueError("Invalid time")
         assert validate_schedule("invalid", "06:00") is False
 
 
 def test_validate_schedule_invalid_end():
     """Test validate_schedule with invalid end time."""
-    with patch("custom_components.autolock.validation.parse_time_string") as mock_parse:
+    with patch("custom_components.autolock.helpers.schedule.parse_time_string") as mock_parse:
         # First call succeeds, second fails
         call_count = 0
 

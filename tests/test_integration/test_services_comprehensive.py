@@ -24,7 +24,6 @@ async def test_lock_now_service_success(mock_hass):
         "lock_entity": "lock.test",
         "verification_delay": 5.0,
     }
-    door.config.get = lambda key, default=None: door.config.get(key, default)
     door.notification_service = MagicMock()
     door.notification_service.send_notification = AsyncMock()
 
@@ -71,7 +70,6 @@ async def test_lock_now_service_failure(mock_hass):
         "lock_entity": "lock.test",
         "verification_delay": 5.0,
     }
-    door.config.get = lambda key, default=None: door.config.get(key, default)
     door.notification_service = MagicMock()
     door.notification_service.send_notification = AsyncMock()
 
