@@ -1,7 +1,7 @@
 # Home Assistant AutoLock Integration
 
-[![CI](https://github.com/wirebound-labs/ha-autolock/workflows/CI/badge.svg)](https://github.com/wirebound-labs/ha-autolock/actions)
-[![Coverage](https://codecov.io/gh/wirebound-labs/ha-autolock/branch/main/graph/badge.svg)](https://codecov.io/gh/wirebound-labs/ha-autolock)
+[![CI](https://github.com/wireboundlabs/ha-autolock/workflows/CI/badge.svg)](https://github.com/wireboundlabs/ha-autolock/actions)
+[![Coverage](https://codecov.io/gh/wireboundlabs/ha-autolock/branch/main/graph/badge.svg)](https://codecov.io/gh/wireboundlabs/ha-autolock)
 [![hacs](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://github.com/hacs/integration)
 [![ha-core](https://img.shields.io/badge/Home%20Assistant-2025.1.4%2B-blue.svg)](https://www.home-assistant.io/)
 [![python](https://img.shields.io/badge/Python-3.12-blue.svg)](https://www.python.org/)
@@ -68,6 +68,7 @@ Automatically lock doors after they close with configurable day/night delays, re
 ### Services
 
 - `autolock.lock_now`: Lock door immediately with verification
+
   ```yaml
   service: autolock.lock_now
   data:
@@ -75,14 +76,16 @@ Automatically lock doors after they close with configurable day/night delays, re
   ```
 
 - `autolock.snooze`: Snooze auto-lock for specified duration
+
   ```yaml
   service: autolock.snooze
   data:
     door_id: front_door
-    duration: 30  # 15, 30, or 60 minutes
+    duration: 30 # 15, 30, or 60 minutes
   ```
 
 - `autolock.enable`: Enable auto-lock for a door
+
   ```yaml
   service: autolock.enable
   data:
@@ -99,6 +102,7 @@ Automatically lock doors after they close with configurable day/night delays, re
 ### Helpers
 
 Each door creates the following helpers:
+
 - `input_boolean.autolock_{door_id}_enabled`: Enable/disable switch
 - `input_datetime.autolock_{door_id}_snooze_until`: Snooze state
 - `timer.autolock_{door_id}_delay`: Countdown timer
@@ -159,6 +163,7 @@ pre-commit install
 ```
 
 **Pre-commit hooks** will automatically:
+
 - Run `ruff check --fix` to fix linting issues
 - Run `ruff format` to format code
 - Run `mypy` for type checking
@@ -193,4 +198,3 @@ MIT License
 ## Contributing
 
 Contributions are welcome! Please open an issue or pull request.
-
