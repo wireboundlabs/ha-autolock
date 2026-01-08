@@ -315,7 +315,6 @@ class TestHandleTrigger:
 
         # Patch schedule_calculator.get_delay to return expected delay
         # This avoids patching datetime which is imported inside the function
-        mock_now = datetime(2024, 1, 1, hour, 0)
         with patch.object(
             door.schedule_calculator,
             "get_delay",
