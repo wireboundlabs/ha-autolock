@@ -80,9 +80,7 @@ async def test_find_notify_service_with_target():
 async def test_find_notify_service_with_invalid_target():
     """Test find_notify_service with invalid target falls back to first service."""
     hass = MagicMock()
-    hass.services.async_services.return_value = {
-        "notify": {"mobile_app_android": {}}
-    }
+    hass.services.async_services.return_value = {"notify": {"mobile_app_android": {}}}
 
     service = NotificationService(hass)
     result = service.find_notify_service("mobile_app_iphone")
