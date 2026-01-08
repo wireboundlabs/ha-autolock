@@ -60,3 +60,32 @@ async def test_find_notify_service_no_services():
     result = service.find_notify_service()
 
     assert result is None
+
+
+@pytest.mark.asyncio
+async def test_find_notify_service_with_target():
+    """Test find_notify_service with specific target."""
+    hass = MagicMock()
+    hass.services.async_services.return_value = {
+        "notify": {"mobile_app_iphone": {}, "mobile_app_android": {}}
+    }
+
+    service = NotificationService(hass)
+    result = service.find_notify_service("mobile_app_iphone")
+
+    assert result == "mobile_app_iphone"
+
+
+@pytest.mark.asyncio
+async def test_find_notify_service_with_invalid_target():
+    """Test find_notify_service with invalid target falls back to first service."""
+    hass = MagicMock()
+    hass.services.async_services.return_value = {
+        "notify": {"mobile_app_android": {}}
+    }
+
+    service = NotificationService(hass)
+    result = service.find_notify_service("mobile_app_iphone")
+
+    # Should fall back to first available service
+    assert result == "mobile_app_android"

@@ -53,6 +53,16 @@ def test_validate_entity_state():
     hass.states.get.return_value = None
     assert validate_entity_state(hass, "lock.test", ["locked"]) is False
 
+    # Test when entity exists but state becomes None between calls (line 91)
+    # This simulates a race condition where entity exists initially but is removed
+    # First call (in validate_entity_exists) returns a state, second call returns None
+    state_mock = MagicMock()
+    hass.states.get.side_effect = [state_mock, None]
+    assert validate_entity_state(hass, "lock.test", ["locked"]) is False
+    # Reset to use return_value again
+    hass.states.get.side_effect = None
+    hass.states.get.return_value = state
+
     # Test with empty allowed states
     hass.states.get.return_value = state
     assert validate_entity_state(hass, "lock.test", []) is False
@@ -68,6 +78,30 @@ def test_validate_entity_available():
     assert validate_entity_available(hass, "lock.test") is True
 
     state.state = "unavailable"
+    assert validate_entity_available(hass, "lock.test") is False
+
+    # Test when entity doesn't exist (line 117)
+    hass.states.get.return_value = None
+    assert validate_entity_available(hass, "lock.test") is False
+
+    # Test when entity exists but state becomes None between calls (line 121)
+    # This simulates a race condition where entity exists initially but is removed
+    # First call (in validate_entity_exists) returns a state, second call returns None
+    state_mock = MagicMock()
+    hass.states.get.side_effect = [state_mock, None]
+    assert validate_entity_available(hass, "lock.test") is False
+    # Reset to use return_value again
+    hass.states.get.side_effect = None
+    hass.states.get.return_value = state
+
+    # Test with "unknown" state
+    state.state = "unknown"
+    hass.states.get.return_value = state
+    assert validate_entity_available(hass, "lock.test") is False
+
+    # Test with "None" state
+    state.state = "None"
+    hass.states.get.return_value = state
     assert validate_entity_available(hass, "lock.test") is False
 
 
