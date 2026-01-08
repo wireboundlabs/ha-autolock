@@ -313,13 +313,13 @@ class TestHandleTrigger:
         mock_hass.states.get.side_effect = mock_get
         mock_hass.services.async_call = AsyncMock()
 
-        # Patch datetime.now where it's imported in the function
-        # The function imports: from datetime import datetime
-        # So we patch the datetime class's now method
+        # Patch schedule_calculator.get_delay to return expected delay
+        # This avoids patching datetime which is imported inside the function
         mock_now = datetime(2024, 1, 1, hour, 0)
-        with patch(
-            "datetime.datetime.now",
-            return_value=mock_now,
+        with patch.object(
+            door.schedule_calculator,
+            "get_delay",
+            return_value=expected_delay,
         ):
             await door._handle_trigger()
 

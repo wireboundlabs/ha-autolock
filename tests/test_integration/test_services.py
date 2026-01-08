@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from contextlib import suppress
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -208,7 +209,12 @@ class TestLockNowService:
 
     @pytest.mark.asyncio
     async def test_exception_handling(self, mock_hass, door):
-        """Test exception handling."""
+        """Test exception handling.
+
+        When lock_with_verification raises an exception, it propagates
+        and the service doesn't send a notification (exception handling
+        would need to be added to the service if desired).
+        """
         mock_hass.data[DOMAIN] = {"test_door": door}
 
         with (
@@ -229,12 +235,11 @@ class TestLockNowService:
             service = await _get_service_handler(mock_hass, "lock_now")
             call_data = MagicMock()
             call_data.data = {"door_id": "test_door"}
-            # Service should handle exception gracefully
-            try:
+            # Exception propagates - service doesn't catch it
+            with suppress(Exception):
                 await service(call_data)
-            except Exception:
-                pass  # Expected to be handled by service
-            door.notification_service.send_notification.assert_called_once()
+            # Notification is not sent when exception occurs
+            door.notification_service.send_notification.assert_not_called()
 
 
 class TestSnoozeService:

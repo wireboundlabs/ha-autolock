@@ -220,7 +220,10 @@ class TestSchemaSensor:
         assert "sensor_entity" not in result or result.get("sensor_entity") is None
 
     def test_empty_string(self):
-        """Test with empty string sensor - voluptuous accepts empty strings by default."""
+        """Test with empty string sensor.
+
+        Voluptuous accepts empty strings by default.
+        """
         # Voluptuous accepts empty strings for Optional str fields
         result = SCHEMA_SENSOR({"sensor_entity": ""})
         assert result["sensor_entity"] == ""
