@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -216,8 +216,9 @@ class TestHandleTrigger:
         """Test when snooze is in the future."""
         enabled_state = MagicMock()
         enabled_state.state = "on"
-        future_time = datetime.now(UTC).replace(microsecond=0)
-        future_time = future_time.replace(second=0, minute=future_time.minute + 30)
+        future_time = datetime.now(UTC).replace(microsecond=0, second=0) + timedelta(
+            minutes=30
+        )
         snooze_state = MagicMock()
         snooze_state.state = future_time.isoformat()
 
@@ -239,8 +240,9 @@ class TestHandleTrigger:
         """Test when snooze is in the past."""
         enabled_state = MagicMock()
         enabled_state.state = "on"
-        past_time = datetime.now(UTC).replace(microsecond=0)
-        past_time = past_time.replace(minute=past_time.minute - 30)
+        past_time = datetime.now(UTC).replace(microsecond=0, second=0) - timedelta(
+            minutes=30
+        )
         snooze_state = MagicMock()
         snooze_state.state = past_time.isoformat()
 
@@ -311,10 +313,14 @@ class TestHandleTrigger:
         mock_hass.states.get.side_effect = mock_get
         mock_hass.services.async_call = AsyncMock()
 
-        with patch("custom_components.autolock.door.datetime") as mock_datetime:
-            mock_now = datetime(2024, 1, 1, hour, 0)
-            mock_datetime.now.return_value = mock_now
-
+        # Patch datetime.now where it's imported in the function
+        # The function imports: from datetime import datetime
+        # So we patch the datetime class's now method
+        mock_now = datetime(2024, 1, 1, hour, 0)
+        with patch(
+            "datetime.datetime.now",
+            return_value=mock_now,
+        ):
             await door._handle_trigger()
 
             # Verify timer was started with correct delay

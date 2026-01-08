@@ -461,7 +461,7 @@ class TestLockWithVerification:
         validator = SafetyValidator(mock_hass)
 
         with patch("asyncio.sleep", new_callable=AsyncMock) as mock_sleep:
-            result = await validator.lock_with_verification(
+            await validator.lock_with_verification(
                 "lock.test", verification_delay=0.0
             )
 
