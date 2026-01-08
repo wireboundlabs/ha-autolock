@@ -16,7 +16,16 @@ async def test_can_lock_success(mock_hass):
     # Mock lock state
     lock_state = MagicMock()
     lock_state.state = LOCK_STATE_UNLOCKED
-    mock_hass.states.get.return_value = lock_state
+    # Mock sensor state (door closed = "on")
+    sensor_state = MagicMock()
+    sensor_state.state = "on"
+
+    def mock_get(entity_id):
+        if "lock" in entity_id:
+            return lock_state
+        return sensor_state
+
+    mock_hass.states.get = MagicMock(side_effect=mock_get)
 
     validator = SafetyValidator(mock_hass)
     can_lock, reason = validator.can_lock("lock.test", "binary_sensor.test")
