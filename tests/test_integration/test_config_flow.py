@@ -250,7 +250,9 @@ async def test_async_step_options_complete(flow, mock_hass):
     }
 
     with (
-        patch.object(flow, "async_set_unique_id", new_callable=AsyncMock) as mock_unique,
+        patch.object(
+            flow, "async_set_unique_id", new_callable=AsyncMock
+        ) as mock_unique,
         patch.object(
             flow, "_abort_if_unique_id_configured", new_callable=MagicMock
         ) as mock_abort,

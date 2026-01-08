@@ -7,7 +7,6 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from custom_components.autolock.const import LOCK_STATE_UNLOCKED
 from custom_components.autolock.door import AutolockDoor
 
 
@@ -131,7 +130,9 @@ async def test_state_changed_listener_trigger(door, mock_hass):
         callback(event)
 
         # Give async task time to run
-        await mock_hass.async_create_task.call_args[0][0] if mock_hass.async_create_task.called else None
+        await mock_hass.async_create_task.call_args[0][
+            0
+        ] if mock_hass.async_create_task.called else None
 
 
 @pytest.mark.asyncio
@@ -236,7 +237,9 @@ async def test_timer_finished_listener(door, mock_hass):
         callback(event)
 
         # Give async task time to run
-        await mock_hass.async_create_task.call_args[0][0] if mock_hass.async_create_task.called else None
+        await mock_hass.async_create_task.call_args[0][
+            0
+        ] if mock_hass.async_create_task.called else None
 
 
 @pytest.mark.asyncio
@@ -408,7 +411,9 @@ async def test_lock_door_all_retries_fail(door, mock_hass):
         await door._lock_door()
 
         # Should have called lock_with_verification retry_count + 1 times
-        assert door.safety_validator.lock_with_verification.call_count == 4  # 3 retries + 1 initial
+        assert (
+            door.safety_validator.lock_with_verification.call_count == 4
+        )  # 3 retries + 1 initial
         mock_notify.assert_called_once()
 
 
