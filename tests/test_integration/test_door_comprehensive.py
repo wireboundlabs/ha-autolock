@@ -220,9 +220,7 @@ async def test_listen_to_timer_finished(door, mock_hass):
 @pytest.mark.asyncio
 async def test_timer_finished_listener(door, mock_hass):
     """Test timer finished listener calls handle_timer_finished."""
-    with patch.object(
-        door, "_handle_timer_finished", new_callable=AsyncMock
-    ):
+    with patch.object(door, "_handle_timer_finished", new_callable=AsyncMock):
         door._listen_to_timer_finished()
 
         # Get the listener callback

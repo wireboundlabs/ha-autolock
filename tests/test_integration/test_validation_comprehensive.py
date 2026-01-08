@@ -208,9 +208,7 @@ def test_schema_retry():
 
     # Invalid range should raise
     with pytest.raises(voluptuous.Invalid):
-        SCHEMA_RETRY(
-            {"retry_count": 10, "retry_delay": 5, "verification_delay": 5}
-        )
+        SCHEMA_RETRY({"retry_count": 10, "retry_delay": 5, "verification_delay": 5})
 
 
 def test_schema_options():
