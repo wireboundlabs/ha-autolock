@@ -37,9 +37,7 @@ async def test_async_step_user_invalid_lock(flow, mock_hass):
     # Set up mock to return None (entity not found) so validation fails
     mock_hass.states.get.return_value = None
 
-    result = await flow.async_step_user(
-        {"name": "Test Door", "lock_entity": "invalid"}
-    )
+    result = await flow.async_step_user({"name": "Test Door", "lock_entity": "invalid"})
 
     assert result["type"] == "form"
     assert result["step_id"] == "user"
