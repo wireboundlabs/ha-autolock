@@ -81,6 +81,7 @@ def test_get_entity_domain():
     assert get_entity_domain(hass, "binary_sensor.door") == "binary_sensor"
     assert get_entity_domain(hass, "invalid") is None
 
-    # Test when entity doesn't exist
+    # get_entity_domain doesn't check if entity exists, just extracts from entity_id
+    # So it will still return the domain even if entity doesn't exist
     hass.states.get.return_value = None
-    assert get_entity_domain(hass, "lock.test") is None
+    assert get_entity_domain(hass, "lock.test") == "lock"

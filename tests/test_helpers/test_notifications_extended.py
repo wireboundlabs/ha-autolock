@@ -101,7 +101,11 @@ async def test_send_push_notification_with_data(mock_hass):
 
     assert result is True
     call_args = mock_hass.services.async_call.call_args
-    assert call_args[0][2].get("data") == {"key": "value"}
+    # Data is merged directly into service_data, not nested under 'data'
+    service_data = call_args[0][2]
+    assert service_data.get("key") == "value"
+    assert service_data.get("title") == "Title"
+    assert service_data.get("message") == "Message"
 
 
 @pytest.mark.asyncio
