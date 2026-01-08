@@ -179,12 +179,10 @@ class NotificationService:
         Returns:
             Service name if found, None otherwise
         """
-        if target:
-            # Check if specific target exists
-            if f"notify.{target}" in self.hass.services.async_services().get(
-                "notify", {}
-            ):
-                return target
+        if target and f"notify.{target}" in self.hass.services.async_services().get(
+            "notify", {}
+        ):
+            return target
 
         # Find first available notify service
         notify_services = self.hass.services.async_services().get("notify", {})

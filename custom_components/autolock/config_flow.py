@@ -61,13 +61,12 @@ class AutoLockConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         """Handle sensor step (optional)."""
         if user_input is not None:
             sensor_entity = user_input.get("sensor_entity")
-            if sensor_entity:
-                if not validate_sensor_entity(self.hass, sensor_entity):
-                    return self.async_show_form(
-                        step_id="sensor",
-                        data_schema=SCHEMA_SENSOR,
-                        errors={"sensor_entity": "invalid_sensor_entity"},
-                    )
+            if sensor_entity and not validate_sensor_entity(self.hass, sensor_entity):
+                return self.async_show_form(
+                    step_id="sensor",
+                    data_schema=SCHEMA_SENSOR,
+                    errors={"sensor_entity": "invalid_sensor_entity"},
+                )
             self.data.update(user_input)
             return await self.async_step_timing()
 

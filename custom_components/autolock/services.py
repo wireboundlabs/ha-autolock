@@ -80,8 +80,11 @@ async def async_setup_services(hass: HomeAssistant) -> None:
             return
 
         # Validate duration
-        if duration not in [SNOOZE_DURATION_15, SNOOZE_DURATION_30, SNOOZE_DURATION_60]:
-            _LOGGER.error("Invalid snooze duration: %d (must be 15, 30, or 60)", duration)
+        valid_durations = [SNOOZE_DURATION_15, SNOOZE_DURATION_30, SNOOZE_DURATION_60]
+        if duration not in valid_durations:
+            _LOGGER.error(
+                "Invalid snooze duration: %d (must be 15, 30, or 60)", duration
+            )
             return
 
         # Get door instance

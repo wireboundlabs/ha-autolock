@@ -102,9 +102,11 @@ class SafetyValidator:
             # Check timeout
             elapsed = asyncio.get_event_loop().time() - start_time
             if elapsed >= timeout:
+                current_state = lock_state.state
                 return (
                     False,
-                    f"Lock did not reach state {expected_state} within {timeout}s (current: {lock_state.state})",
+                    f"Lock did not reach state {expected_state} within "
+                    f"{timeout}s (current: {current_state})",
                 )
 
             await asyncio.sleep(poll_interval)

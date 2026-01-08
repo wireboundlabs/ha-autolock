@@ -148,7 +148,9 @@ class AutolockDoor:
                 return
 
             # Check if this is a trigger event (door closed or lock unlocked)
-            trigger_state = "on" if "sensor" in entity_id.lower() else LOCK_STATE_UNLOCKED
+            trigger_state = (
+                "on" if "sensor" in entity_id.lower() else LOCK_STATE_UNLOCKED
+            )
             if new_state.state == trigger_state:
                 self.hass.async_create_task(self._handle_trigger())
 
@@ -257,12 +259,20 @@ class AutolockDoor:
         )
 
         # Check result
-        if not result.success or (isinstance(result, LockResult) and not result.verified):
+        is_lock_result = isinstance(result, LockResult)
+        if not result.success or (is_lock_result and not result.verified):
             # Send failure notification
-            error_msg = result.last_error if hasattr(result, "last_error") else "Lock failed"
+            error_msg = (
+                result.last_error if hasattr(result, "last_error") else "Lock failed"
+            )
+            message = (
+                f"Failed to lock {lock_entity}: {error_msg}\n\n"
+                "Likely cloud auth / integration issue. "
+                "Check lock integration status."
+            )
             await self.notification_service.send_notification(
                 title=f"AutoLock Failed: {self.config['name']}",
-                message=f"Failed to lock {lock_entity}: {error_msg}\n\nLikely cloud auth / integration issue. Check lock integration status.",
+                message=message,
                 persistent_id=f"autolock_{self.door_id}_failure",
                 severity="error",
             )
