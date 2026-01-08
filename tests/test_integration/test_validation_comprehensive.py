@@ -5,6 +5,7 @@ from __future__ import annotations
 from unittest.mock import MagicMock, patch
 
 import pytest
+import voluptuous
 
 from custom_components.autolock.validation import (
     SCHEMA_BASE,
@@ -138,7 +139,7 @@ def test_schema_base():
     assert result["lock_entity"] == "lock.test"
 
     # Missing required fields should raise
-    with pytest.raises(Exception):  # voluptuous.Invalid
+    with pytest.raises(voluptuous.Invalid):
         SCHEMA_BASE({"name": "Test Door"})
 
 
@@ -178,7 +179,7 @@ def test_schema_timing():
     assert result["night_delay"] == 2  # Default
 
     # Invalid range should raise
-    with pytest.raises(Exception):  # voluptuous.Invalid
+    with pytest.raises(voluptuous.Invalid):
         SCHEMA_TIMING(
             {
                 "day_delay": 300,  # Above max
@@ -206,8 +207,10 @@ def test_schema_retry():
     assert result["verification_delay"] == 5  # Default
 
     # Invalid range should raise
-    with pytest.raises(Exception):  # voluptuous.Invalid
-        SCHEMA_RETRY({"retry_count": 10, "retry_delay": 5, "verification_delay": 5})
+    with pytest.raises(voluptuous.Invalid):
+        SCHEMA_RETRY(
+            {"retry_count": 10, "retry_delay": 5, "verification_delay": 5}
+        )
 
 
 def test_schema_options():

@@ -105,7 +105,7 @@ async def test_state_changed_listener_trigger(door, mock_hass):
         patch(
             "custom_components.autolock.door.create_trigger_strategy"
         ) as mock_strategy,
-        patch.object(door, "_handle_trigger", new_callable=AsyncMock) as mock_handle,
+        patch.object(door, "_handle_trigger", new_callable=AsyncMock),
     ):
         mock_trigger = MagicMock()
         mock_trigger.get_triggers.return_value = [
@@ -222,7 +222,7 @@ async def test_timer_finished_listener(door, mock_hass):
     """Test timer finished listener calls handle_timer_finished."""
     with patch.object(
         door, "_handle_timer_finished", new_callable=AsyncMock
-    ) as mock_handle:
+    ):
         door._listen_to_timer_finished()
 
         # Get the listener callback

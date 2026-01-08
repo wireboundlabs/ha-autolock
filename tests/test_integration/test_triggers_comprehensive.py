@@ -43,7 +43,7 @@ def test_lock_trigger_strategy_get_triggers():
 
 
 def test_create_trigger_strategy_with_sensor():
-    """Test create_trigger_strategy returns SensorTriggerStrategy when sensor provided."""
+    """Test create_trigger_strategy returns SensorTriggerStrategy with sensor."""
     hass = MagicMock()
     strategy = create_trigger_strategy(hass, "lock.test", "binary_sensor.test")
 
